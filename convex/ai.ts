@@ -19,20 +19,7 @@ export const listPrompts = query({
       // Ordered by _creationTime, return most recent
       .order("desc")
       .take(args.count);
-    return await Promise.all(
-      prompts.map(async (prompt) => {
-        if (prompt.result?.type === "image") {
-          return {
-            ...prompt,
-            result: {
-              type: "image",
-              value: await ctx.storage.getUrl(prompt.result.value),
-            },
-          };
-        }
-        return prompt;
-      })
-    );
+    return prompts;
   },
 });
 
@@ -63,14 +50,7 @@ export const generate = internalAction({
     id: v.id("prompts"),
   },
   handler: async (ctx, args) => {
-    switch (args.outputType) {
-      case "text":
-        await generateText(ctx, args.prompt, args.id);
-        return;
-      case "image":
-        await generateImage(ctx, args.prompt, args.id);
-        return;
-    }
+    await generateText(ctx, args.prompt, args.id);
   },
 });
 
@@ -102,39 +82,6 @@ async function generateText(ctx: ActionCtx, prompt: string, id: Id<"prompts">) {
   const json = await response.json();
   const result = json.choices[0].message.content;
   await ctx.runMutation(internal.ai.setTextResult, { id, result });
-}
-
-async function generateImage(
-  ctx: ActionCtx,
-  prompt: string,
-  id: Id<"prompts">
-) {
-  if (process.env.OPENAI_API_KEY === undefined) {
-    throw new Error("OPENAI_API_KEY environment variable not set");
-  }
-  const response = await fetch("https://api.openai.com/v1/images/generations", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "dall-e-3",
-      prompt,
-      n: 1,
-      size: "1024x1024",
-    }),
-  });
-  if (!response.ok) {
-    await generateFailed(ctx, id, response, `OpenAI API error`);
-  }
-  const json = await response.json();
-  const imageResponse = await fetch(json.data[0].url);
-  if (!imageResponse.ok) {
-    await generateFailed(ctx, id, response, `Image download error`);
-  }
-  const result = await ctx.storage.store(await imageResponse.blob());
-  await ctx.runMutation(internal.ai.setImageResult, { id, result });
 }
 
 async function generateFailed(

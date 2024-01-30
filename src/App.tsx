@@ -78,7 +78,7 @@ function PromptForm() {
           <SelectGroup>
             <SelectLabel>Output</SelectLabel>
             <SelectItem value="text">Text</SelectItem>
-            <SelectItem disabled={false} value="image">
+            <SelectItem disabled value="image">
               Image
             </SelectItem>
           </SelectGroup>
