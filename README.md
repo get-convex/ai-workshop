@@ -1,14 +1,11 @@
-# Convex + TypeScript + ESLint + Vite + React + Tailwind + shadcn/ui
+# AI Workshop Demo Project
 
-This template provides a minimal setup to get Convex working, with TypeScript,
-ESLint and React using [Vite](https://vitejs.dev/).
-
-Start by editing `convex/myFunctions.ts` and interact with your React app.
+Follow the instructions at https://labs.convex.dev/ai.
 
 See Convex docs at https://docs.convex.dev/home
 
 ## Setting up
 
 ```
-npm create convex@latest -t react-vite-shadcn
+npm create convex@latest -- -t get-convex/ai-workshop
 ```
