@@ -129,11 +129,7 @@ async function getOpenAIKey() {
   if (process.env.OPENAI_API_KEY !== undefined) {
     return process.env.OPENAI_API_KEY;
   }
-  const response = await fetch("https://brazen-platypus-69.convex.site/key");
-  if (!response.ok) {
-    throw new Error(
-      `You need to setup \`OPENAI_API_KEY\` environment variable, follow Step 8 `
-    );
-  }
-  return await response.text();
+  throw new Error(
+    `You need to setup \`OPENAI_API_KEY\` environment variable, follow Step 4`
+  );
 }
