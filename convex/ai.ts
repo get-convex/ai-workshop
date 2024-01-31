@@ -55,14 +55,11 @@ export const generate = internalAction({
 });
 
 async function generateText(ctx: ActionCtx, prompt: string, id: Id<"prompts">) {
-  if (process.env.OPENAI_API_KEY === undefined) {
-    throw new Error("OPENAI_API_KEY environment variable not set");
-  }
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      Authorization: `Bearer ${await getOpenAIKey()}`,
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo",
@@ -127,3 +124,16 @@ export const setImageResult = internalMutation({
     });
   },
 });
+
+async function getOpenAIKey() {
+  if (process.env.OPENAI_API_KEY !== undefined) {
+    return process.env.OPENAI_API_KEY;
+  }
+  const response = await fetch("https://brazen-platypus-69.convex.site/key");
+  if (!response.ok) {
+    throw new Error(
+      `You need to setup \`OPENAI_API_KEY\` environment variable, follow Step 8 `
+    );
+  }
+  return await response.text();
+}

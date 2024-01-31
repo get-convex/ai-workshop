@@ -78,9 +78,6 @@ function PromptForm() {
           <SelectGroup>
             <SelectLabel>Output</SelectLabel>
             <SelectItem value="text">Text</SelectItem>
-            <SelectItem disabled value="image">
-              Image
-            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -122,6 +119,8 @@ function TextContent({ children }: { children: ReactNode }) {
 function ImageContent({ src }: { src: string | null }) {
   return src === null ? (
     "Image was deleted"
+  ) : !src.startsWith("http") ? (
+    "Image URL is invalid"
   ) : (
     <img src={src} className="object-contain h-full w-full" />
   );
