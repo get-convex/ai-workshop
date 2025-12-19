@@ -7,5 +7,5 @@ See Convex docs at https://docs.convex.dev/home
 ## Setting up
 
 ```
-npx create-convex@latest  -t get-convex/ai-workshop
+npx create-convex@latest -t get-convex/ai-workshop
 ```
